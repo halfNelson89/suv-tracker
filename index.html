@@ -25,6 +25,7 @@
     --hi: #FFFFFF; --md: #8B8B95; --lo: #62626B;
     --mint: #00D9A6; --pink: #FF6B9D; --amber: #FF8C42; --blue: #4FB0F8; --purple: #A77DF2; --red: #F25959;
     --c-Tahoe: #00D9A6; --c-Escalade: #A77DF2; --c-Yukon: #FF8C42;
+    --c-Expedition: #1E88E5; --c-Navigator: #E91E63; --c-Sequoia: #66BB6A;
     --divider: rgba(255,255,255,0.08);
   }
   .topbar { display: flex; justify-content: space-between; align-items: flex-start; padding: 24px 22px 16px; }
@@ -79,6 +80,9 @@
   .chip.on.c-Tahoe { background: var(--c-Tahoe); color: var(--bg); }
   .chip.on.c-Escalade { background: var(--c-Escalade); color: var(--bg); }
   .chip.on.c-Yukon { background: var(--c-Yukon); color: var(--bg); }
+  .chip.on.c-Expedition { background: var(--c-Expedition); color: #fff; }
+  .chip.on.c-Navigator { background: var(--c-Navigator); color: #fff; }
+  .chip.on.c-Sequoia { background: var(--c-Sequoia); color: var(--bg); }
   .browse-toolbar { display: flex; justify-content: space-between; align-items: center; margin: 4px 0 12px; font-size: 12px; }
   .browse-toolbar .count { color: var(--md); font-weight: 500; }
   .browse-toolbar .count strong { color: var(--hi); font-weight: 600; }
@@ -258,6 +262,9 @@
     <button class="chip on c-Tahoe" data-key="model" data-val="Tahoe">Tahoe</button>
     <button class="chip on c-Escalade" data-key="model" data-val="Escalade">Escalade</button>
     <button class="chip on c-Yukon" data-key="model" data-val="Yukon">Yukon</button>
+    <button class="chip on c-Expedition" data-key="model" data-val="Expedition">Expedition</button>
+    <button class="chip on c-Navigator" data-key="model" data-val="Navigator">Navigator</button>
+    <button class="chip on c-Sequoia" data-key="model" data-val="Sequoia">Sequoia</button>
   </div>
   <div class="chip-row">
     <button class="chip on" data-key="bucket" data-val="all">All seats</button>
@@ -354,6 +361,9 @@
     <div class="ins-row"><div class="ins-dot" style="background:var(--c-Tahoe)"></div><label>Tahoe</label><input type="number" min="0" max="500" step="5" value="155" id="ins-Tahoe"></div>
     <div class="ins-row"><div class="ins-dot" style="background:var(--c-Escalade)"></div><label>Escalade</label><input type="number" min="0" max="500" step="5" value="210" id="ins-Escalade"></div>
     <div class="ins-row"><div class="ins-dot" style="background:var(--c-Yukon)"></div><label>Yukon</label><input type="number" min="0" max="500" step="5" value="155" id="ins-Yukon"></div>
+    <div class="ins-row"><div class="ins-dot" style="background:var(--c-Expedition)"></div><label>Expedition</label><input type="number" min="0" max="500" step="5" value="160" id="ins-Expedition"></div>
+    <div class="ins-row"><div class="ins-dot" style="background:var(--c-Navigator)"></div><label>Navigator</label><input type="number" min="0" max="500" step="5" value="215" id="ins-Navigator"></div>
+    <div class="ins-row"><div class="ins-dot" style="background:var(--c-Sequoia)"></div><label>Sequoia</label><input type="number" min="0" max="500" step="5" value="145" id="ins-Sequoia"></div>
   </div>
 
   <p class="set-section-title t-system">System</p>
@@ -415,7 +425,19 @@ let D_FALLBACK = [
   {id:24, model:'Yukon', year:2024, trim:'SLT 4WD', drive:'4WD', confirmed:true, miles:41871, price:45078, buckets:'opt', loc:'Elizabeth, NJ', deal:'fair', site:'CarGurus'},
   {id:25, model:'Yukon', year:2024, trim:'SLT 4WD', drive:'4WD', confirmed:true, miles:59812, price:45295, buckets:'opt', loc:'Ramsey, NJ', deal:'great', site:'CarGurus'},
   {id:26, model:'Yukon', year:2024, trim:'SLT', drive:'?', confirmed:false, miles:59593, price:42657, buckets:'opt', loc:'Tampa, FL - Rivard Buick GMC', deal:'great', site:'Cars.com'},
-  {id:27, model:'Yukon', year:2024, trim:'SLT', drive:'?', confirmed:false, miles:41871, price:45078, buckets:'opt', loc:'Elizabeth, NJ - NJ Auto Haus LLC', deal:'great', site:'Cars.com'}
+  {id:27, model:'Yukon', year:2024, trim:'SLT', drive:'?', confirmed:false, miles:41871, price:45078, buckets:'opt', loc:'Elizabeth, NJ - NJ Auto Haus LLC', deal:'great', site:'Cars.com'},
+  {id:28, model:'Expedition', year:2025, trim:'MAX Active 4WD', drive:'4WD', confirmed:true, miles:22717, price:45250, buckets:'opt', loc:'Cold Spring, KY', deal:'fair', site:'CarGurus'},
+  {id:29, model:'Expedition', year:2025, trim:'Active 4WD', drive:'4WD', confirmed:true, miles:36220, price:47966, buckets:'opt', loc:'Columbus, OH', deal:'great', site:'CarGurus'},
+  {id:30, model:'Expedition', year:2025, trim:'Active 4WD', drive:'4WD', confirmed:true, miles:29799, price:49601, buckets:'opt', loc:'Bismarck, ND', deal:'fair', site:'CarGurus'},
+  {id:31, model:'Expedition', year:2025, trim:'Active 4WD', drive:'4WD', confirmed:true, miles:25771, price:55015, buckets:'opt', loc:'Brighton, CO', deal:'good', site:'CarGurus'},
+  {id:32, model:'Expedition', year:2025, trim:'Active 4WD', drive:'4WD', confirmed:true, miles:31171, price:55023, buckets:'opt', loc:'Elkhart, IN', deal:'good', site:'CarGurus'},
+  {id:33, model:'Expedition', year:2025, trim:'Active 4WD', drive:'4WD', confirmed:true, miles:39705, price:55030, buckets:'opt', loc:'Gastonia, NC (certified)', deal:'good', site:'CarGurus'},
+  {id:34, model:'Sequoia', year:2023, trim:'Limited 4WD', drive:'4WD', confirmed:true, miles:56259, price:54396, buckets:'yes', loc:'Beaverton, OR', deal:'great', site:'CarGurus', featured:true},
+  {id:35, model:'Sequoia', year:2023, trim:'Limited 4WD', drive:'4WD', confirmed:true, miles:57072, price:55722, buckets:'yes', loc:'Liverpool, NY', deal:'good', site:'CarGurus'},
+  {id:36, model:'Sequoia', year:2023, trim:'Capstone 4WD', drive:'4WD', confirmed:true, miles:22453, price:55995, buckets:'yes', loc:'Lincoln, NE', deal:'fair', site:'CarGurus', featured:true},
+  {id:37, model:'Sequoia', year:2024, trim:'Limited 4WD', drive:'4WD', confirmed:true, miles:48000, price:58500, buckets:'yes', loc:'Plattsburgh, NY', deal:'fair', site:'CarGurus'},
+  {id:38, model:'Sequoia', year:2023, trim:'SR5 4WD', drive:'4WD', confirmed:true, miles:50047, price:52859, buckets:'no', loc:'Plattsburgh, NY', deal:'great', site:'CarGurus'},
+  {id:39, model:'Sequoia', year:2023, trim:'SR5 4WD', drive:'4WD', confirmed:true, miles:44060, price:53995, buckets:'no', loc:'Wood Ridge, NJ (certified)', deal:'great', site:'CarGurus'}
 ];
 let ACTIVITY_FALLBACK = [
   {time:'6:08 AM', type:'NEW', icon:'ti-plus', label:'NEW LISTING', title:'2025 Yukon Denali AWD/4WD', sub:'$59,900, 28k mi, Autotrader', monthly:1189},
@@ -433,10 +455,10 @@ let LAST_UPDATED = null;
 
 const STATE = {
   tab: 'home', search: '',
-  model: new Set(['Tahoe','Escalade','Yukon']),
+  model: new Set(['Tahoe','Escalade','Yukon','Expedition','Navigator','Sequoia']),
   bucket: 'all', sort: 'total-asc',
   finance: { down: 5000, trade: 0, term: 60, apr: 5.99, tax: 6.00 },
-  insurance: { Tahoe: 155, Escalade: 210, Yukon: 155 }
+  insurance: { Tahoe: 155, Escalade: 210, Yukon: 155, Expedition: 160, Navigator: 215, Sequoia: 145 }
 };
 
 try {
@@ -682,8 +704,9 @@ document.querySelectorAll('.term-pill').forEach(p => p.addEventListener('click',
     if (STATE.tab === 'browse') renderBrowse();
   });
 });
-['Tahoe','Escalade','Yukon'].forEach(m => {
+['Tahoe','Escalade','Yukon','Expedition','Navigator','Sequoia'].forEach(m => {
   const el = document.getElementById('ins-' + m);
+  if (!el) return;
   el.value = STATE.insurance[m];
   el.addEventListener('input', e => {
     STATE.insurance[m] = parseFloat(e.target.value || 0);
