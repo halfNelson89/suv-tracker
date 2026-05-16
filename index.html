@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SUV Tracker">
+<meta name="theme-color" content="#0A0A0F">
+<title>Corrine's Car Shopping Journey</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.34.1/dist/tabler-icons.min.css">
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: #0A0A0F; color: #FFFFFF; font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", system-ui, sans-serif; -webkit-font-smoothing: antialiased; min-height: 100vh; min-height: 100dvh; overscroll-behavior: none; }
+  body { padding: env(safe-area-inset-top) 0 calc(80px + env(safe-area-inset-bottom)) 0; max-width: 480px; margin: 0 auto; position: relative; min-height: 100vh; min-height: 100dvh; }
+  a { color: inherit; text-decoration: none; }
+  i.ti { font-style: normal; line-height: 1; }
+  :root {
+    --bg: #0A0A0F; --surface: #1A1A24; --surface2: #242430; --surface3: #2E2E3C;
+    --hi: #FFFFFF; --md: #8B8B95; --lo: #62626B;
+    --mint: #00D9A6; --pink: #FF6B9D; --amber: #FF8C42; --blue: #4FB0F8; --purple: #A77DF2; --red: #F25959;
+    --c-Tahoe: #00D9A6; --c-Escalade: #A77DF2; --c-Yukon: #FF8C42;
+    --divider: rgba(255,255,255,0.08);
+  }
+  .topbar { display: flex; justify-content: space-between; align-items: flex-start; padding: 24px 22px 16px; }
+  .greet-l { font-size: 12px; color: var(--md); margin: 0 0 2px; font-weight: 500; }
+  .greet-h { font-size: 22px; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; color: var(--mint); flex-shrink: 0; }
+  .tab-content { padding: 0 22px; }
+  .tab-content[hidden] { display: none; }
+
+  .ring-wrap { position: relative; width: 240px; height: 240px; margin: 8px auto 16px; }
+  .ring-wrap svg { display: block; transform: rotate(-90deg); }
+  .ring-wrap .arc { fill: none; stroke-width: 16; stroke-linecap: round; transition: stroke-dasharray 0.5s ease; }
+  .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ring-label { font-size: 11px; color: var(--md); font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; margin: 0; }
+  .ring-value { font-size: 40px; font-weight: 700; margin: 4px 0 0; letter-spacing: -0.02em; }
+  .ring-sub { font-size: 12px; color: var(--mint); font-weight: 600; margin: 4px 0 0; text-align: center; max-width: 200px; line-height: 1.3; padding: 0 8px; }
+  .ring-legend { display: flex; justify-content: center; gap: 24px; margin: 4px 0 16px; }
+  .leg-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--hi); font-weight: 500; }
+  .leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 20px; }
+  .stat { background: var(--surface); border-radius: 16px; padding: 14px 14px 12px; }
+  .stat .ti { font-size: 18px; line-height: 1; }
+  .stat-v { font-size: 26px; font-weight: 700; margin: 8px 0 0; line-height: 1; letter-spacing: -0.02em; }
+  .stat-l { font-size: 11px; color: var(--md); font-weight: 500; margin: 6px 0 0; }
+
+  .sec-h { display: flex; justify-content: space-between; align-items: baseline; margin: 8px 0 12px; }
+  .sec-h h3 { font-size: 16px; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
+  .sec-h .link { font-size: 12px; color: var(--mint); font-weight: 600; cursor: pointer; background: none; border: none; padding: 0; font-family: inherit; display: inline-flex; align-items: center; gap: 4px; }
+  .sec-h .link .ti { font-size: 14px; }
+
+  .deal-list { display: flex; flex-direction: column; gap: 8px; }
+  .deal { background: var(--surface); border-radius: 14px; padding: 12px 14px; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; position: relative; overflow: hidden; cursor: pointer; transition: background 0.15s; }
+  .deal:active { background: var(--surface2); }
+  .deal::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--col); }
+  .deal-l { padding-left: 8px; min-width: 0; }
+  .deal-flag { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 3px; color: var(--col); }
+  .deal-ttl { font-size: 13px; font-weight: 600; margin: 0; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .deal-meta { font-size: 11px; color: var(--md); margin: 2px 0 0; font-weight: 500; }
+  .deal-r { text-align: right; min-width: 84px; }
+  .deal-r-l { font-size: 8px; color: var(--md); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin: 0; }
+  .deal-r-v { font-size: 18px; font-weight: 700; color: var(--mint); margin: 2px 0 0; line-height: 1; }
+  .deal-r-sub { font-size: 9px; color: var(--md); margin: 2px 0 0; font-weight: 500; }
+
+  .search-bar { background: var(--surface); border-radius: 12px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; margin: 0 0 14px; }
+  .search-bar .ti { color: var(--md); font-size: 18px; }
+  .search-bar input { flex: 1; background: none; border: none; color: var(--hi); font-size: 13px; font-family: inherit; outline: none; min-width: 0; }
+  .search-bar input::placeholder { color: var(--md); }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px; }
+  .chip { background: var(--surface); color: var(--hi); padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; user-select: none; border: none; font-family: inherit; transition: all 0.15s; white-space: nowrap; }
+  .chip.on { background: var(--hi); color: var(--bg); }
+  .chip.on.c-Tahoe { background: var(--c-Tahoe); color: var(--bg); }
+  .chip.on.c-Escalade { background: var(--c-Escalade); color: var(--bg); }
+  .chip.on.c-Yukon { background: var(--c-Yukon); color: var(--bg); }
+  .browse-toolbar { display: flex; justify-content: space-between; align-items: center; margin: 4px 0 12px; font-size: 12px; }
+  .browse-toolbar .count { color: var(--md); font-weight: 500; }
+  .browse-toolbar .count strong { color: var(--hi); font-weight: 600; }
+  .browse-toolbar select { background: var(--surface); color: var(--mint); border: none; font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 10px; font-family: inherit; cursor: pointer; outline: none; -webkit-appearance: none; appearance: none; }
+
+  .listing { background: var(--surface); border-radius: 16px; padding: 14px 16px 12px 18px; margin: 0 0 8px; position: relative; overflow: hidden; cursor: pointer; transition: background 0.15s; }
+  .listing:active { background: var(--surface2); }
+  .listing::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--col); }
+  .listing-top { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start; }
+  .listing-flag { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 3px; color: var(--col); }
+  .listing-ttl { font-size: 14px; font-weight: 700; margin: 0; line-height: 1.3; }
+  .listing-meta { font-size: 11px; color: var(--md); margin: 4px 0 0; font-weight: 500; line-height: 1.4; }
+  .listing-r { text-align: right; min-width: 90px; }
+  .listing-r-l { font-size: 8px; color: var(--md); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin: 0; }
+  .listing-r-v { font-size: 22px; font-weight: 700; color: var(--mint); margin: 2px 0 0; line-height: 1; letter-spacing: -0.02em; }
+  .listing-bot { display: flex; gap: 6px; margin: 10px 0 0; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+  .b-group { display: flex; gap: 4px; flex-wrap: wrap; }
+  .b { font-size: 10px; padding: 3px 7px; border-radius: 6px; font-weight: 600; }
+  .b-buckets-yes { background: rgba(0,217,166,0.15); color: var(--mint); }
+  .b-buckets-opt { background: rgba(255,140,66,0.15); color: var(--amber); }
+  .b-buckets-no { background: rgba(242,89,89,0.15); color: var(--red); }
+  .b-deal-great { background: rgba(0,217,166,0.15); color: var(--mint); }
+  .b-deal-good { background: rgba(79,176,248,0.15); color: var(--blue); }
+  .b-warn { background: rgba(242,89,89,0.15); color: var(--red); }
+  .listing-src { font-size: 10px; color: var(--md); font-weight: 500; display: inline-flex; align-items: center; gap: 3px; }
+  .listing-src strong { color: var(--mint); font-weight: 600; }
+  .listing-src .ti { font-size: 12px; }
+
+  .act-rings { background: var(--surface); border-radius: 18px; padding: 18px; margin: 0 0 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .act-ring { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .act-ring svg { transform: rotate(-90deg); }
+  .act-ring .ar-bg { stroke: var(--surface2); stroke-width: 4; fill: none; }
+  .act-ring .ar-fg { stroke-width: 4; fill: none; stroke-linecap: round; }
+  .act-ring-c { position: relative; width: 56px; height: 56px; }
+  .act-ring-v { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; }
+  .act-ring-l { font-size: 11px; font-weight: 600; color: var(--hi); text-align: center; }
+  .act-section { font-size: 12px; font-weight: 600; color: var(--md); margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before { content: ''; position: absolute; left: 11px; top: 12px; bottom: 12px; width: 1.5px; background: var(--surface2); }
+  .tl-event { position: relative; margin: 0 0 12px; }
+  .tl-dot { position: absolute; left: -32px; top: 14px; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--bg); }
+  .tl-dot .ti { font-size: 13px; font-weight: 700; }
+  .tl-dot.t-NEW { background: var(--mint); }
+  .tl-dot.t-DROP { background: var(--amber); }
+  .tl-dot.t-SOLD { background: var(--pink); }
+  .tl-card { background: var(--surface); border-radius: 12px; padding: 12px 14px; }
+  .tl-row1 { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 4px; }
+  .tl-type { font-size: 9px; font-weight: 700; letter-spacing: 0.07em; }
+  .tl-type.t-NEW { color: var(--mint); }
+  .tl-type.t-DROP { color: var(--amber); }
+  .tl-type.t-SOLD { color: var(--pink); }
+  .tl-time { font-size: 9px; color: var(--md); font-weight: 500; }
+  .tl-ttl { font-size: 13px; font-weight: 700; margin: 0; }
+  .tl-sub { font-size: 11px; color: var(--md); font-weight: 500; margin: 3px 0 0; }
+  .tl-mo { font-size: 11px; color: var(--mint); font-weight: 600; margin: 6px 0 0; }
+
+  .set-card { background: var(--surface); border-radius: 16px; padding: 16px; margin: 0 0 14px; }
+  .set-section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin: 8px 0 8px; }
+  .set-section-title.t-finance { color: var(--mint); }
+  .set-section-title.t-ins { color: var(--pink); }
+  .set-section-title.t-system { color: var(--blue); }
+  .set-row { display: flex; justify-content: space-between; align-items: center; margin: 0 0 14px; }
+  .set-row:last-child { margin-bottom: 0; }
+  .set-row-l { font-size: 12px; color: var(--md); font-weight: 500; }
+  .set-row-v { font-size: 14px; color: var(--mint); font-weight: 700; }
+  .term-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 6px 0 0; }
+  .term-pill { background: var(--surface2); color: var(--hi); border: none; padding: 9px 0; border-radius: 14px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+  .term-pill.on { background: var(--mint); color: var(--bg); }
+  .slider-wrap { margin: 6px 0 0; }
+  .slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; background: var(--surface2); border-radius: 3px; outline: none; }
+  .slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--hi); border: 2px solid var(--mint); cursor: pointer; }
+  .slider::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--hi); border: 0; cursor: pointer; }
+  .ins-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--divider); }
+  .ins-row:last-child { border-bottom: none; }
+  .ins-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .ins-row label { font-size: 13px; font-weight: 600; flex: 1; margin: 0; }
+  .ins-row input { width: 70px; background: var(--surface2); border: none; color: var(--mint); font-weight: 700; font-size: 13px; padding: 8px 10px; border-radius: 8px; text-align: right; font-family: inherit; outline: none; -webkit-appearance: none; appearance: none; }
+  .pulse-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--mint); animation: pulse 2s infinite; flex-shrink: 0; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .refresh-row { display: flex; align-items: center; gap: 10px; }
+  .refresh-row .lbl { flex: 1; }
+  .refresh-row .lbl strong { display: block; font-size: 13px; font-weight: 700; }
+  .refresh-row .lbl span { font-size: 11px; color: var(--md); font-weight: 500; }
+  .refresh-row .on-pill { background: rgba(0,217,166,0.15); color: var(--mint); padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 700; }
+
+  .modal { display: none; }
+  .modal.open { display: block; }
+  .modal-hdr { display: flex; justify-content: space-between; align-items: center; padding: 16px 22px; border-bottom: 1px solid var(--divider); }
+  .modal-back-btn { background: none; border: none; color: var(--hi); font-size: 22px; cursor: pointer; padding: 4px 8px; font-family: inherit; line-height: 1; }
+  .modal-back-btn .ti { font-size: 22px; }
+  .modal-back-btn.fav .ti { color: var(--pink); }
+  .modal-title { font-size: 14px; font-weight: 700; }
+  .detail-photo { background: var(--surface2); border-radius: 18px; height: 160px; margin: 16px 0; display: flex; align-items: center; justify-content: center; color: var(--md); position: relative; overflow: hidden; }
+  .detail-photo .ti { font-size: 64px; }
+  .detail-photo::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--col); }
+  .detail-ttl { font-size: 22px; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .detail-loc { font-size: 12px; color: var(--md); font-weight: 500; margin: 0 0 16px; }
+  .detail-total { background: var(--surface); border-radius: 18px; padding: 16px 18px; margin: 0 0 16px; display: flex; align-items: center; justify-content: space-between; }
+  .detail-total-l { font-size: 9px; color: var(--md); font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin: 0 0 4px; }
+  .detail-total-v { font-size: 32px; font-weight: 700; color: var(--mint); margin: 0; letter-spacing: -0.02em; line-height: 1; }
+  .detail-total-sub { font-size: 11px; color: var(--md); font-weight: 500; margin: 6px 0 0; }
+  .trend-bars { display: flex; align-items: flex-end; gap: 3px; height: 50px; }
+  .trend-bars span { width: 6px; border-radius: 2px; background: var(--surface2); }
+  .trend-bars span.last { background: var(--mint); }
+  .detail-bd { background: var(--surface); border-radius: 16px; padding: 14px 16px; margin: 0 0 12px; }
+  .detail-bd-h { font-size: 13px; font-weight: 700; margin: 0 0 10px; }
+  .detail-bd-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 12px; }
+  .detail-bd-row span:first-child { color: var(--md); }
+  .detail-bd-row.tot { border-top: 1px solid var(--divider); margin-top: 4px; padding-top: 10px; font-weight: 700; }
+  .detail-bd-row.tot span:first-child { color: var(--hi); }
+  .detail-bd-row.tot .v { color: var(--mint); }
+  .detail-split { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 0 16px; }
+  .detail-split .sp { background: var(--surface); border-radius: 14px; padding: 12px 14px; }
+  .detail-split .sp-l { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin: 0; }
+  .detail-split .sp-v { font-size: 22px; font-weight: 700; margin: 4px 0 0; }
+  .detail-split .sp-sub { font-size: 9px; color: var(--md); margin: 4px 0 0; font-weight: 500; }
+  .cta { display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: var(--mint); color: var(--bg); border: none; padding: 16px; border-radius: 26px; font-size: 14px; font-weight: 700; width: 100%; cursor: pointer; font-family: inherit; text-decoration: none; text-align: center; }
+  .cta .ti { font-size: 16px; }
+
+  .tabbar { position: fixed; left: 0; right: 0; bottom: 0; max-width: 480px; margin: 0 auto; background: var(--surface); border-top: 1px solid var(--divider); display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px 0 calc(14px + env(safe-area-inset-bottom)); z-index: 100; }
+  .tabbar .tab { background: none; border: none; padding: 6px 0; cursor: pointer; color: var(--md); font-size: 10px; font-weight: 600; font-family: inherit; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: color 0.15s; }
+  .tabbar .tab .ti { font-size: 22px; }
+  .tabbar .tab.on { color: var(--mint); }
+
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--md); font-size: 13px; }
+  .updated-stamp { text-align: center; font-size: 10px; color: var(--lo); padding: 12px 0 0; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div>
+    <p class="greet-l">Good morning, Corrine</p>
+    <h1 class="greet-h" id="today-date">Friday, May 15</h1>
+  </div>
+  <div class="avatar">C</div>
+</header>
+
+<main class="tab-content" id="tab-home">
+  <div class="ring-wrap">
+    <svg width="240" height="240" viewBox="0 0 240 240">
+      <circle class="arc" cx="120" cy="120" r="105" stroke="#1A1A24"/>
+      <circle class="arc" id="arc-loan" cx="120" cy="120" r="105" stroke="#00D9A6"/>
+      <circle class="arc" id="arc-ins" cx="120" cy="120" r="105" stroke="#FF6B9D"/>
+    </svg>
+    <div class="ring-center">
+      <p class="ring-label">Lowest /mo</p>
+      <p class="ring-value" id="ring-val">$1,089</p>
+      <p class="ring-sub" id="ring-sub">2024 Yukon AT4 4WD</p>
+    </div>
+  </div>
+  <div class="ring-legend">
+    <div class="leg-item"><span class="leg-dot" style="background:#00D9A6"></span><span id="leg-loan">Loan $879</span></div>
+    <div class="leg-item"><span class="leg-dot" style="background:#FF6B9D"></span><span id="leg-ins">Insurance $210</span></div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat"><i class="ti ti-plus" style="color:var(--mint)"></i><p class="stat-v">3</p><p class="stat-l">New today</p></div>
+    <div class="stat"><i class="ti ti-arrow-down" style="color:var(--amber)"></i><p class="stat-v">5</p><p class="stat-l">Price drops</p></div>
+    <div class="stat"><i class="ti ti-check" style="color:var(--md)"></i><p class="stat-v">2</p><p class="stat-l">Sold</p></div>
+  </div>
+
+  <div class="sec-h">
+    <h3>Top deals today</h3>
+    <button class="link" onclick="switchTab('browse')">See all <i class="ti ti-arrow-right"></i></button>
+  </div>
+  <div class="deal-list" id="home-deals"></div>
+  <p class="updated-stamp" id="updated-stamp">Updated daily &middot; Ben &amp; Corrine's car hunt</p>
+</main>
+
+<main class="tab-content" id="tab-browse" hidden>
+  <div class="search-bar">
+    <i class="ti ti-search"></i>
+    <input type="text" id="search" placeholder="Search by trim, dealer, or location" autocomplete="off">
+  </div>
+  <div class="chip-row">
+    <button class="chip on c-Tahoe" data-key="model" data-val="Tahoe">Tahoe</button>
+    <button class="chip on c-Escalade" data-key="model" data-val="Escalade">Escalade</button>
+    <button class="chip on c-Yukon" data-key="model" data-val="Yukon">Yukon</button>
+  </div>
+  <div class="chip-row">
+    <button class="chip on" data-key="bucket" data-val="all">All seats</button>
+    <button class="chip" data-key="bucket" data-val="yes">Buckets std</button>
+    <button class="chip" data-key="bucket" data-val="yesopt">Std + opt</button>
+  </div>
+  <div class="browse-toolbar">
+    <span class="count"><strong id="rcount">0</strong> matches</span>
+    <select id="sort">
+      <option value="total-asc">Lowest /mo</option>
+      <option value="price-asc">Lowest sticker</option>
+      <option value="miles-asc">Lowest miles</option>
+      <option value="deal">Best deal</option>
+      <option value="year-desc">Newest</option>
+    </select>
+  </div>
+  <div id="listings"></div>
+</main>
+
+<main class="tab-content" id="tab-activity" hidden>
+  <div style="display:flex;justify-content:space-between;align-items:baseline;margin:8px 0 14px;">
+    <div>
+      <h3 style="font-size:18px;font-weight:700;margin:0">Activity</h3>
+      <p style="font-size:11px;color:var(--md);margin:4px 0 0;font-weight:500" id="act-stamp">Updated 6:06 AM</p>
+    </div>
+  </div>
+  <div class="act-rings">
+    <div class="act-ring">
+      <div class="act-ring-c">
+        <svg width="56" height="56" viewBox="0 0 56 56">
+          <circle class="ar-bg" cx="28" cy="28" r="24"/>
+          <circle class="ar-fg" cx="28" cy="28" r="24" stroke="#00D9A6" stroke-dasharray="68 200"/>
+        </svg>
+        <div class="act-ring-v" style="color:var(--mint)">3</div>
+      </div>
+      <div class="act-ring-l">New</div>
+    </div>
+    <div class="act-ring">
+      <div class="act-ring-c">
+        <svg width="56" height="56" viewBox="0 0 56 56">
+          <circle class="ar-bg" cx="28" cy="28" r="24"/>
+          <circle class="ar-fg" cx="28" cy="28" r="24" stroke="#FF8C42" stroke-dasharray="113 200"/>
+        </svg>
+        <div class="act-ring-v" style="color:var(--amber)">5</div>
+      </div>
+      <div class="act-ring-l">Drops</div>
+    </div>
+    <div class="act-ring">
+      <div class="act-ring-c">
+        <svg width="56" height="56" viewBox="0 0 56 56">
+          <circle class="ar-bg" cx="28" cy="28" r="24"/>
+          <circle class="ar-fg" cx="28" cy="28" r="24" stroke="#FF6B9D" stroke-dasharray="45 200"/>
+        </svg>
+        <div class="act-ring-v" style="color:var(--pink)">2</div>
+      </div>
+      <div class="act-ring-l">Sold</div>
+    </div>
+  </div>
+  <div class="act-section">Today</div>
+  <div class="timeline" id="timeline"></div>
+</main>
+
+<main class="tab-content" id="tab-settings" hidden>
+  <div class="set-card" style="display:flex;align-items:center;gap:14px;">
+    <div class="avatar" style="background:var(--mint);color:var(--bg)">C</div>
+    <div>
+      <p style="font-size:14px;font-weight:700;margin:0">Corrine Fallon</p>
+      <p style="font-size:11px;color:var(--md);font-weight:500;margin:2px 0 0">ZIP 15626 &middot; Westmoreland, PA</p>
+    </div>
+  </div>
+
+  <p class="set-section-title t-finance">BCU Finance</p>
+  <div class="set-card">
+    <div class="set-row" style="margin-bottom:8px"><span class="set-row-l">Loan term</span></div>
+    <div class="term-row" id="term-row">
+      <button class="term-pill" data-v="36">36mo</button>
+      <button class="term-pill" data-v="48">48mo</button>
+      <button class="term-pill on" data-v="60">60mo</button>
+      <button class="term-pill" data-v="72">72mo</button>
+      <button class="term-pill" data-v="75">75mo</button>
+    </div>
+    <div class="set-row" style="margin: 18px 0 0;"><span class="set-row-l">APR</span><span class="set-row-v" id="apr-v">5.99%</span></div>
+    <div class="slider-wrap"><input type="range" min="0" max="15" step="0.01" value="5.99" id="apr" class="slider"></div>
+    <div class="set-row" style="margin: 16px 0 0;"><span class="set-row-l">Down payment</span><span class="set-row-v" id="down-v">$5,000</span></div>
+    <div class="slider-wrap"><input type="range" min="0" max="20000" step="500" value="5000" id="down" class="slider"></div>
+    <div class="set-row" style="margin: 16px 0 0;"><span class="set-row-l">Trade-in value</span><span class="set-row-v" id="trade-v">$0</span></div>
+    <div class="slider-wrap"><input type="range" min="0" max="30000" step="500" value="0" id="trade" class="slider"></div>
+    <div class="set-row" style="margin: 16px 0 0;"><span class="set-row-l">PA sales tax</span><span class="set-row-v" id="tax-v">6.00%</span></div>
+    <div class="slider-wrap"><input type="range" min="0" max="10" step="0.01" value="6" id="tax" class="slider"></div>
+  </div>
+
+  <p class="set-section-title t-ins">Insurance / month &mdash; ZIP 15626</p>
+  <div class="set-card">
+    <div class="ins-row"><div class="ins-dot" style="background:var(--c-Tahoe)"></div><label>Tahoe</label><input type="number" min="0" max="500" step="5" value="155" id="ins-Tahoe"></div>
+    <div class="ins-row"><div class="ins-dot" style="background:var(--c-Escalade)"></div><label>Escalade</label><input type="number" min="0" max="500" step="5" value="210" id="ins-Escalade"></div>
+    <div class="ins-row"><div class="ins-dot" style="background:var(--c-Yukon)"></div><label>Yukon</label><input type="number" min="0" max="500" step="5" value="155" id="ins-Yukon"></div>
+  </div>
+
+  <p class="set-section-title t-system">System</p>
+  <div class="set-card">
+    <div class="refresh-row">
+      <div class="pulse-dot"></div>
+      <div class="lbl">
+        <strong>Daily auto-refresh</strong>
+        <span id="refresh-stamp">Active &middot; runs 6:06 AM ET</span>
+      </div>
+      <span class="on-pill">ON</span>
+    </div>
+  </div>
+</main>
+
+<div class="modal" id="detail-modal">
+  <div class="modal-hdr">
+    <button class="modal-back-btn" onclick="closeDetail()" aria-label="Back"><i class="ti ti-arrow-left"></i></button>
+    <span class="modal-title">Detail</span>
+    <button class="modal-back-btn fav" aria-label="Save"><i class="ti ti-heart"></i></button>
+  </div>
+  <div style="padding:0 22px;" id="detail-body"></div>
+</div>
+
+<nav class="tabbar">
+  <button class="tab on" data-tab="home"><i class="ti ti-home"></i><span>Home</span></button>
+  <button class="tab" data-tab="browse"><i class="ti ti-search"></i><span>Browse</span></button>
+  <button class="tab" data-tab="activity"><i class="ti ti-bolt"></i><span>Activity</span></button>
+  <button class="tab" data-tab="settings"><i class="ti ti-settings"></i><span>Settings</span></button>
+</nav>
+
+<script>
+// Try to fetch fresh data from data.json (gets updated daily by the scheduled task)
+// Falls back to inline data if fetch fails.
+let D_FALLBACK = [
+  {id:1, model:'Tahoe', year:2025, trim:'LT 4WD', drive:'4WD', confirmed:true, miles:41064, price:48679, buckets:'opt', loc:'Haverhill, MA', deal:'great', site:'CarGurus'},
+  {id:2, model:'Tahoe', year:2025, trim:'LT 4WD', drive:'4WD', confirmed:true, miles:50865, price:49372, buckets:'opt', loc:'Mayfield Heights, OH', deal:'great', site:'CarGurus'},
+  {id:3, model:'Tahoe', year:2025, trim:'LT 4WD', drive:'4WD', confirmed:true, miles:51168, price:49518, buckets:'opt', loc:'Port Charlotte, FL', deal:'great', site:'CarGurus'},
+  {id:4, model:'Tahoe', year:2025, trim:'LT 4WD', drive:'4WD', confirmed:true, miles:34721, price:50199, buckets:'opt', loc:'Parma, OH', deal:'fair', site:'CarGurus'},
+  {id:5, model:'Tahoe', year:2025, trim:'LT', drive:'AWD/4WD', confirmed:true, miles:29000, price:54699, buckets:'opt', loc:'SAG Auto Sales (1864 mi)', deal:'good', site:'Autotrader'},
+  {id:6, model:'Tahoe', year:2025, trim:'LT', drive:'AWD/4WD', confirmed:true, miles:26000, price:54420, buckets:'opt', loc:'ALM Roswell (495 mi)', deal:'great', site:'Autotrader'},
+  {id:7, model:'Tahoe', year:2025, trim:'LT', drive:'AWD/4WD', confirmed:true, miles:33000, price:53020, buckets:'opt', loc:'Genesis of Macon (548 mi)', deal:'great', site:'Autotrader'},
+  {id:8, model:'Tahoe', year:2025, trim:'LT', drive:'?', confirmed:false, miles:32728, price:44888, buckets:'opt', loc:'Central Autohaus, Dallas TX', deal:'great', site:'Cars.com'},
+  {id:9, model:'Tahoe', year:2025, trim:'LT', drive:'?', confirmed:false, miles:41064, price:47980, buckets:'opt', loc:'Jaffarian Toyota', deal:'great', site:'Cars.com'},
+  {id:10, model:'Tahoe', year:2025, trim:'LT 4WD', drive:'4WD', confirmed:true, miles:24701, price:54245, buckets:'opt', loc:'999 mi away', deal:'great', site:'TrueCar'},
+  {id:11, model:'Escalade', year:2023, trim:'Luxury 4WD', drive:'4WD', confirmed:true, miles:35225, price:57267, buckets:'yes', loc:'Anna, IL', deal:'fair', site:'CarGurus', featured:true},
+  {id:12, model:'Escalade', year:2023, trim:'Luxury 4WD', drive:'4WD', confirmed:true, miles:55927, price:58294, buckets:'yes', loc:'Opelika, AL', deal:'great', site:'CarGurus'},
+  {id:13, model:'Escalade', year:2023, trim:'Luxury 4WD', drive:'4WD', confirmed:true, miles:49473, price:59999, buckets:'yes', loc:'Redford, MI', deal:'good', site:'CarGurus'},
+  {id:14, model:'Escalade', year:2023, trim:'Luxury', drive:'AWD/4WD', confirmed:true, miles:35000, price:56900, buckets:'yes', loc:'JP Sides Chevrolet (555 mi)', deal:'fair', site:'Autotrader'},
+  {id:15, model:'Escalade', year:2023, trim:'Luxury', drive:'AWD/4WD', confirmed:true, miles:55000, price:57595, buckets:'yes', loc:'Glynn Smith Chevrolet (608 mi)', deal:'fair', site:'Autotrader'},
+  {id:16, model:'Escalade', year:2023, trim:'Premium Luxury', drive:'?', confirmed:false, miles:51222, price:56825, buckets:'yes', loc:'Lia Chrysler Jeep Dodge Ram', deal:'great', site:'Cars.com'},
+  {id:17, model:'Yukon', year:2024, trim:'AT4 4WD', drive:'4WD', confirmed:true, miles:24454, price:55000, buckets:'yes', loc:'Ogden, UT', deal:'fair', site:'CarGurus', featured:true},
+  {id:18, model:'Yukon', year:2024, trim:'AT4 4WD', drive:'4WD', confirmed:true, miles:49873, price:55190, buckets:'yes', loc:'Salem, OR', deal:'great', site:'CarGurus', featured:true},
+  {id:19, model:'Yukon', year:2024, trim:'AT4', drive:'AWD/4WD', confirmed:true, miles:45000, price:58900, buckets:'yes', loc:'DeCozen Chrysler Jeep, NJ', deal:'fair', site:'Autotrader', featured:true},
+  {id:20, model:'Yukon', year:2025, trim:'Denali', drive:'AWD/4WD', confirmed:true, miles:40000, price:55900, buckets:'yes', loc:'Dealer (unspecified)', deal:'fair', site:'Autotrader', featured:true},
+  {id:21, model:'Yukon', year:2025, trim:'Denali', drive:'AWD/4WD', confirmed:true, miles:35000, price:57900, buckets:'yes', loc:'Dealer (unspecified)', deal:'fair', site:'Autotrader'},
+  {id:22, model:'Yukon', year:2025, trim:'Denali', drive:'AWD/4WD', confirmed:true, miles:28000, price:59900, buckets:'yes', loc:'Dealer (unspecified)', deal:'fair', site:'Autotrader'},
+  {id:23, model:'Yukon', year:2024, trim:'SLE 4WD', drive:'4WD', confirmed:true, miles:53677, price:44914, buckets:'no', loc:'New Port Richey, FL', deal:'good', site:'CarGurus'},
+  {id:24, model:'Yukon', year:2024, trim:'SLT 4WD', drive:'4WD', confirmed:true, miles:41871, price:45078, buckets:'opt', loc:'Elizabeth, NJ', deal:'fair', site:'CarGurus'},
+  {id:25, model:'Yukon', year:2024, trim:'SLT 4WD', drive:'4WD', confirmed:true, miles:59812, price:45295, buckets:'opt', loc:'Ramsey, NJ', deal:'great', site:'CarGurus'},
+  {id:26, model:'Yukon', year:2024, trim:'SLT', drive:'?', confirmed:false, miles:59593, price:42657, buckets:'opt', loc:'Tampa, FL - Rivard Buick GMC', deal:'great', site:'Cars.com'},
+  {id:27, model:'Yukon', year:2024, trim:'SLT', drive:'?', confirmed:false, miles:41871, price:45078, buckets:'opt', loc:'Elizabeth, NJ - NJ Auto Haus LLC', deal:'great', site:'Cars.com'}
+];
+let ACTIVITY_FALLBACK = [
+  {time:'6:08 AM', type:'NEW', icon:'ti-plus', label:'NEW LISTING', title:'2025 Yukon Denali AWD/4WD', sub:'$59,900, 28k mi, Autotrader', monthly:1189},
+  {time:'6:08 AM', type:'DROP', icon:'ti-arrow-down', label:'PRICE DROP', title:'2024 Escalade Luxury 4WD', sub:'$59,999 to $58,294 (-$1,705)', monthly:1228},
+  {time:'6:07 AM', type:'NEW', icon:'ti-plus', label:'NEW LISTING', title:'2024 Yukon AT4 4WD', sub:'$55,190, 49k mi, Salem OR, CarGurus', monthly:1094},
+  {time:'6:07 AM', type:'DROP', icon:'ti-arrow-down', label:'PRICE DROP', title:'2025 Tahoe LT 4WD', sub:'$50,397 to $49,372 (-$1,025)', monthly:1029},
+  {time:'6:06 AM', type:'NEW', icon:'ti-plus', label:'NEW LISTING', title:'2024 Yukon SLT 4WD', sub:'$45,295, 60k mi, Ramsey NJ, CarGurus', monthly:949},
+  {time:'6:06 AM', type:'SOLD', icon:'ti-check', label:'SOLD', title:'2025 Tahoe LT 4WD', sub:'Was $48,679 at Haverhill, MA'},
+  {time:'6:06 AM', type:'SOLD', icon:'ti-check', label:'SOLD', title:'2023 Escalade Sport 4WD', sub:'Was $61,500 at Sanford, FL'}
+];
+
+let D = D_FALLBACK;
+let ACTIVITY = ACTIVITY_FALLBACK;
+let LAST_UPDATED = null;
+
+const STATE = {
+  tab: 'home', search: '',
+  model: new Set(['Tahoe','Escalade','Yukon']),
+  bucket: 'all', sort: 'total-asc',
+  finance: { down: 5000, trade: 0, term: 60, apr: 5.99, tax: 6.00 },
+  insurance: { Tahoe: 155, Escalade: 210, Yukon: 155 }
+};
+
+try {
+  const saved = JSON.parse(localStorage.getItem('suv-tracker') || '{}');
+  if (saved.finance) Object.assign(STATE.finance, saved.finance);
+  if (saved.insurance) Object.assign(STATE.insurance, saved.insurance);
+  if (saved.sort) STATE.sort = saved.sort;
+} catch(e) {}
+
+function saveState() {
+  try { localStorage.setItem('suv-tracker', JSON.stringify({finance: STATE.finance, insurance: STATE.insurance, sort: STATE.sort})); } catch(e) {}
+}
+
+function calcMonthly(price, model) {
+  const f = STATE.finance;
+  const taxAmt = price * (f.tax / 100);
+  const financed = Math.max(0, price + taxAmt - f.down - f.trade);
+  const r = (f.apr / 100) / 12;
+  const n = f.term;
+  let pay;
+  if (r === 0) pay = financed / n;
+  else pay = financed * (r * Math.pow(1+r,n)) / (Math.pow(1+r,n)-1);
+  const ins = STATE.insurance[model] || 175;
+  return { financed, monthlyPay: pay, ins, total: pay + ins, taxAmt };
+}
+
+const fmt = n => '$' + Math.round(n).toLocaleString();
+const fmtMi = n => n.toLocaleString() + ' mi';
+const dealRank = d => ({great:4,good:3,fair:2,bad:1}[d] || 0);
+const colorVar = m => 'var(--c-' + m + ')';
+
+function getFiltered() {
+  let r = D.filter(l => {
+    if (!STATE.model.has(l.model)) return false;
+    if (STATE.bucket === 'yes' && l.buckets !== 'yes') return false;
+    if (STATE.bucket === 'yesopt' && l.buckets === 'no') return false;
+    if (STATE.search) {
+      const s = STATE.search.toLowerCase();
+      if (!l.trim.toLowerCase().includes(s) && !l.loc.toLowerCase().includes(s) && !l.site.toLowerCase().includes(s) && !l.model.toLowerCase().includes(s)) return false;
+    }
+    return true;
+  });
+  switch (STATE.sort) {
+    case 'total-asc': r.sort((a,b) => calcMonthly(a.price,a.model).total - calcMonthly(b.price,b.model).total); break;
+    case 'price-asc': r.sort((a,b) => a.price - b.price); break;
+    case 'miles-asc': r.sort((a,b) => a.miles - b.miles); break;
+    case 'deal': r.sort((a,b) => dealRank(b.deal) - dealRank(a.deal) || a.price - b.price); break;
+    case 'year-desc': r.sort((a,b) => b.year - a.year || a.price - b.price); break;
+  }
+  return r;
+}
+
+function renderHome() {
+  const all = getFiltered();
+  if (!all.length) return;
+  const totals = all.map(l => ({l, c: calcMonthly(l.price, l.model)}));
+  totals.sort((a,b) => a.c.total - b.c.total);
+  const cheapest = totals[0];
+  const total = cheapest.c.total;
+  const loanPct = cheapest.c.monthlyPay / total;
+  const insPct = cheapest.c.ins / total;
+  const circ = 2 * Math.PI * 105;
+  const loanLen = circ * loanPct * 0.985;
+  const insLen = circ * insPct * 0.985;
+  const arcLoan = document.getElementById('arc-loan');
+  const arcIns = document.getElementById('arc-ins');
+  arcLoan.setAttribute('stroke-dasharray', loanLen + ' ' + (circ - loanLen));
+  arcLoan.setAttribute('stroke-dashoffset', '0');
+  arcIns.setAttribute('stroke-dasharray', insLen + ' ' + (circ - insLen));
+  arcIns.setAttribute('stroke-dashoffset', '-' + (loanLen + 4));
+  document.getElementById('ring-val').textContent = fmt(total);
+  document.getElementById('ring-sub').textContent = cheapest.l.year + ' ' + cheapest.l.model + ' ' + cheapest.l.trim;
+  document.getElementById('leg-loan').textContent = 'Loan ' + fmt(cheapest.c.monthlyPay);
+  document.getElementById('leg-ins').textContent = 'Insurance ' + fmt(cheapest.c.ins);
+  const top = totals.slice(0, 4);
+  document.getElementById('home-deals').innerHTML = top.map(({l, c}, i) => {
+    const flag = i === 0 ? 'Lowest /mo' : (l.featured ? 'Top pick' : (l.deal === 'great' ? 'Great deal' : 'Best match'));
+    return '<div class="deal" style="--col:' + colorVar(l.model) + '" onclick="openDetail(' + l.id + ')">' +
+      '<div class="deal-l">' +
+        '<p class="deal-flag">' + flag + '</p>' +
+        '<p class="deal-ttl">' + l.year + ' ' + l.model + ' ' + l.trim + '</p>' +
+        '<p class="deal-meta">' + fmt(l.price) + ' &middot; ' + fmtMi(l.miles) + '</p>' +
+      '</div>' +
+      '<div class="deal-r">' +
+        '<p class="deal-r-l">Total /mo</p>' +
+        '<p class="deal-r-v">' + fmt(c.total) + '</p>' +
+        '<p class="deal-r-sub">' + l.site + '</p>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function renderBrowse() {
+  const rows = getFiltered();
+  document.getElementById('rcount').textContent = rows.length;
+  const list = document.getElementById('listings');
+  if (!rows.length) { list.innerHTML = '<div class="empty-state">No matches. Try different filters.</div>'; return; }
+  list.innerHTML = rows.map(l => {
+    const c = calcMonthly(l.price, l.model);
+    const bucketLbl = l.buckets === 'yes' ? 'Buckets std' : (l.buckets === 'opt' ? 'Buckets opt' : 'Bench std');
+    const dealLbl = {great:'Great deal', good:'Good deal'}[l.deal];
+    return '<div class="listing" style="--col:' + colorVar(l.model) + '" onclick="openDetail(' + l.id + ')">' +
+      '<div class="listing-top">' +
+        '<div>' +
+          (l.featured ? '<p class="listing-flag">Top pick</p>' : '') +
+          '<p class="listing-ttl">' + l.year + ' ' + l.model + ' ' + l.trim + '</p>' +
+          '<p class="listing-meta">' + fmtMi(l.miles) + ' &middot; ' + l.loc + '</p>' +
+          '<p class="listing-meta">' + fmt(l.price) + ' sticker &middot; ' + l.drive + '</p>' +
+        '</div>' +
+        '<div class="listing-r">' +
+          '<p class="listing-r-l">Total /mo</p>' +
+          '<p class="listing-r-v">' + fmt(c.total) + '</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="listing-bot">' +
+        '<div class="b-group">' +
+          '<span class="b b-buckets-' + l.buckets + '">' + bucketLbl + '</span>' +
+          (dealLbl ? '<span class="b b-deal-' + l.deal + '">' + dealLbl + '</span>' : '') +
+          (!l.confirmed ? '<span class="b b-warn">Drive ?</span>' : '') +
+        '</div>' +
+        '<span class="listing-src"><strong>' + l.site + '</strong> <i class="ti ti-external-link"></i></span>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function renderActivity() {
+  document.getElementById('timeline').innerHTML = ACTIVITY.map(e =>
+    '<div class="tl-event">' +
+      '<div class="tl-dot t-' + e.type + '"><i class="ti ' + e.icon + '"></i></div>' +
+      '<div class="tl-card">' +
+        '<div class="tl-row1"><span class="tl-type t-' + e.type + '">' + e.label + '</span><span class="tl-time">' + e.time + '</span></div>' +
+        '<p class="tl-ttl">' + e.title + '</p>' +
+        '<p class="tl-sub">' + e.sub + '</p>' +
+        (e.monthly ? '<p class="tl-mo">' + fmt(e.monthly) + '/mo</p>' : '') +
+      '</div>' +
+    '</div>'
+  ).join('');
+}
+
+function openDetail(id) {
+  const l = D.find(x => x.id === id);
+  if (!l) return;
+  const c = calcMonthly(l.price, l.model);
+  const seatsLbl = l.buckets === 'yes' ? 'Bucket seats / captains chairs (standard)' : (l.buckets === 'opt' ? 'Bench standard, buckets were optional' : 'Bench seat (standard)');
+  const dealLbl = {great:'Great deal', good:'Good deal', fair:'Fair', bad:'Overpriced'}[l.deal] || 'n/a';
+  let trendBars = '';
+  for (let i = 0; i < 7; i++) {
+    const h = 22 + Math.round(Math.random() * 22);
+    trendBars += '<span class="' + (i === 6 ? 'last' : '') + '" style="height:' + h + 'px"></span>';
+  }
+  const url = l.url || ('https://www.google.com/search?q=' + encodeURIComponent(l.year + ' ' + l.model + ' ' + l.trim + ' ' + l.loc));
+  document.getElementById('detail-body').innerHTML =
+    '<div class="detail-photo" style="--col:' + colorVar(l.model) + '"><i class="ti ti-car"></i></div>' +
+    '<h2 class="detail-ttl">' + l.year + ' ' + l.model + ' ' + l.trim + '</h2>' +
+    '<p class="detail-loc">' + l.loc + ' &middot; ' + l.drive + '</p>' +
+    '<div class="detail-total">' +
+      '<div>' +
+        '<p class="detail-total-l">Total per month</p>' +
+        '<p class="detail-total-v">' + fmt(c.total) + '</p>' +
+        '<p class="detail-total-sub">Loan + insurance combined</p>' +
+      '</div>' +
+      '<div class="trend-bars">' + trendBars + '</div>' +
+    '</div>' +
+    '<div class="detail-bd">' +
+      '<p class="detail-bd-h">Cost breakdown</p>' +
+      '<div class="detail-bd-row"><span>Sticker price</span><span class="v">' + fmt(l.price) + '</span></div>' +
+      '<div class="detail-bd-row"><span>+ PA sales tax (' + STATE.finance.tax.toFixed(2) + '%)</span><span class="v">' + fmt(c.taxAmt) + '</span></div>' +
+      '<div class="detail-bd-row"><span>- Down payment</span><span class="v">-' + fmt(STATE.finance.down) + '</span></div>' +
+      (STATE.finance.trade > 0 ? '<div class="detail-bd-row"><span>- Trade-in</span><span class="v">-' + fmt(STATE.finance.trade) + '</span></div>' : '') +
+      '<div class="detail-bd-row tot"><span>= Financed</span><span class="v">' + fmt(c.financed) + '</span></div>' +
+    '</div>' +
+    '<div class="detail-split">' +
+      '<div class="sp"><p class="sp-l" style="color:var(--mint)">LOAN</p><p class="sp-v">' + fmt(c.monthlyPay) + '</p><p class="sp-sub">' + STATE.finance.term + 'mo &middot; ' + STATE.finance.apr.toFixed(2) + '% APR</p></div>' +
+      '<div class="sp"><p class="sp-l" style="color:var(--pink)">INSURANCE</p><p class="sp-v">' + fmt(c.ins) + '</p><p class="sp-sub">ZIP 15626 &middot; full cov</p></div>' +
+    '</div>' +
+    '<div class="detail-bd" style="font-size:11px;color:var(--md);line-height:1.6;">' +
+      '<strong style="color:var(--hi);font-size:12px">Listing details</strong><br>' +
+      'Mileage: ' + fmtMi(l.miles) + '<br>' +
+      'Drivetrain: ' + l.drive + (!l.confirmed ? ' (unconfirmed - verify with dealer)' : '') + '<br>' +
+      '2nd row: ' + seatsLbl + '<br>' +
+      'Source: ' + l.site + '<br>' +
+      'Deal rating: ' + dealLbl +
+    '</div>' +
+    '<a class="cta" href="' + url + '" target="_blank">View on ' + l.site + ' <i class="ti ti-arrow-right"></i></a>' +
+    '<div style="height:80px"></div>';
+  document.getElementById('detail-modal').classList.add('open');
+  document.querySelectorAll('.tab-content').forEach(t => t.hidden = true);
+}
+
+function closeDetail() {
+  document.getElementById('detail-modal').classList.remove('open');
+  switchTab(STATE.tab);
+}
+
+function switchTab(tab) {
+  STATE.tab = tab;
+  document.getElementById('detail-modal').classList.remove('open');
+  document.querySelectorAll('.tab-content').forEach(t => t.hidden = true);
+  document.getElementById('tab-' + tab).hidden = false;
+  document.querySelectorAll('.tabbar .tab').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+  if (tab === 'home') renderHome();
+  if (tab === 'browse') renderBrowse();
+  if (tab === 'activity') renderActivity();
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll('.tabbar .tab').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+document.querySelectorAll('.chip[data-key]').forEach(c => c.addEventListener('click', () => {
+  const k = c.dataset.key, v = c.dataset.val;
+  if (k === 'model') {
+    if (STATE.model.has(v)) { if (STATE.model.size > 1) { STATE.model.delete(v); c.classList.remove('on'); } }
+    else { STATE.model.add(v); c.classList.add('on'); }
+  } else {
+    document.querySelectorAll('.chip[data-key="' + k + '"]').forEach(cc => cc.classList.remove('on'));
+    c.classList.add('on');
+    STATE[k] = v;
+  }
+  if (STATE.tab === 'browse') renderBrowse();
+  renderHome();
+}));
+document.getElementById('search').addEventListener('input', e => { STATE.search = e.target.value; renderBrowse(); });
+document.getElementById('sort').addEventListener('change', e => { STATE.sort = e.target.value; saveState(); renderBrowse(); });
+document.getElementById('sort').value = STATE.sort;
+document.querySelectorAll('.term-pill').forEach(p => p.addEventListener('click', () => {
+  document.querySelectorAll('.term-pill').forEach(x => x.classList.remove('on'));
+  p.classList.add('on');
+  STATE.finance.term = parseInt(p.dataset.v);
+  saveState(); renderHome();
+  if (STATE.tab === 'browse') renderBrowse();
+}));
+['apr','down','trade','tax'].forEach(id => {
+  const el = document.getElementById(id);
+  el.value = STATE.finance[id];
+  el.addEventListener('input', e => {
+    STATE.finance[id] = parseFloat(e.target.value);
+    const v = STATE.finance[id];
+    if (id === 'apr') document.getElementById('apr-v').textContent = v.toFixed(2) + '%';
+    if (id === 'down') document.getElementById('down-v').textContent = fmt(v);
+    if (id === 'trade') document.getElementById('trade-v').textContent = fmt(v);
+    if (id === 'tax') document.getElementById('tax-v').textContent = v.toFixed(2) + '%';
+    saveState(); renderHome();
+    if (STATE.tab === 'browse') renderBrowse();
+  });
+});
+['Tahoe','Escalade','Yukon'].forEach(m => {
+  const el = document.getElementById('ins-' + m);
+  el.value = STATE.insurance[m];
+  el.addEventListener('input', e => {
+    STATE.insurance[m] = parseFloat(e.target.value || 0);
+    saveState(); renderHome();
+    if (STATE.tab === 'browse') renderBrowse();
+  });
+});
+document.querySelectorAll('.term-pill').forEach(p => p.classList.toggle('on', parseInt(p.dataset.v) === STATE.finance.term));
+
+// Update today's date
+const today = new Date();
+const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+document.getElementById('today-date').textContent = dayNames[today.getDay()] + ', ' + monthNames[today.getMonth()] + ' ' + today.getDate();
+
+// Try to fetch fresh data
+fetch('data.json?t=' + Date.now()).then(r => r.ok ? r.json() : null).then(data => {
+  if (!data) return;
+  if (Array.isArray(data.listings)) D = data.listings;
+  if (Array.isArray(data.activity)) ACTIVITY = data.activity;
+  if (data.lastUpdated) {
+    LAST_UPDATED = data.lastUpdated;
+    const d = new Date(data.lastUpdated);
+    const stamp = 'Updated ' + d.toLocaleString('en-US', {month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
+    document.getElementById('updated-stamp').textContent = stamp;
+    document.getElementById('act-stamp').textContent = stamp;
+    document.getElementById('refresh-stamp').textContent = 'Active &middot; runs 6:06 AM ET &middot; last ' + d.toLocaleString('en-US', {hour: 'numeric', minute: '2-digit'});
+  }
+  renderHome();
+  if (STATE.tab === 'browse') renderBrowse();
+  if (STATE.tab === 'activity') renderActivity();
+}).catch(e => {});
+
+renderHome();
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "lastUpdated": "2026-05-15T10:06:00-04:00",
+  "listings": [
+    {"id":1, "model":"Tahoe", "year":2025, "trim":"LT 4WD", "drive":"4WD", "confirmed":true, "miles":41064, "price":48679, "buckets":"opt", "loc":"Haverhill, MA", "deal":"great", "site":"CarGurus"},
+    {"id":2, "model":"Tahoe", "year":2025, "trim":"LT 4WD", "drive":"4WD", "confirmed":true, "miles":50865, "price":49372, "buckets":"opt", "loc":"Mayfield Heights, OH", "deal":"great", "site":"CarGurus"},
+    {"id":11, "model":"Escalade", "year":2023, "trim":"Luxury 4WD", "drive":"4WD", "confirmed":true, "miles":35225, "price":57267, "buckets":"yes", "loc":"Anna, IL", "deal":"fair", "site":"CarGurus", "featured":true},
+    {"id":17, "model":"Yukon", "year":2024, "trim":"AT4 4WD", "drive":"4WD", "confirmed":true, "miles":24454, "price":55000, "buckets":"yes", "loc":"Ogden, UT", "deal":"fair", "site":"CarGurus", "featured":true}
+  ],
+  "activity": [
+    {"time":"6:08 AM", "type":"NEW", "icon":"ti-plus", "label":"NEW LISTING", "title":"2025 Yukon Denali AWD/4WD", "sub":"$59,900, 28k mi, Autotrader", "monthly":1189},
+    {"time":"6:06 AM", "type":"SOLD", "icon":"ti-check", "label":"SOLD", "title":"2025 Tahoe LT 4WD", "sub":"Was $48,679 at Haverhill, MA"}
+  ]
+}
